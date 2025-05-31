@@ -8,51 +8,27 @@ This project is a toy example meant for beginners learning FastAPI.  It exposes 
 
 ✨ Project Description
 
-Route
+![image](https://github.com/user-attachments/assets/9f724ed0-680f-40c2-be85-85fba320bfb1)
+Summary: simple strings for users to interact with the website
 
-Purpose
+![image](https://github.com/user-attachments/assets/1a6628bf-345c-4422-9c87-a405504692b9)
 
-GET /Greetings
+![image](https://github.com/user-attachments/assets/8511f1ab-0592-4a68-b530-02e70334d29b)
 
-Welcome message
+![image](https://github.com/user-attachments/assets/4325f37c-40d6-4d01-8ba9-a3009b953d0b)
 
-GET /PizzaConversation
+![image](https://github.com/user-attachments/assets/2f3dd78f-bf84-4191-98c5-6b734ce38273)
 
-Asks what the customer would like
+![image](https://github.com/user-attachments/assets/77cfa271-955a-4626-ae55-44fd8f451d41)
 
-GET /PizzaQuestion?pizza=…
+![image](https://github.com/user-attachments/assets/06e6f74e-b155-466e-bfc9-43f56d866536)
 
-Confirms the pizza choice
+![image](https://github.com/user-attachments/assets/7e5176cd-151b-44fd-bdc3-65ebbb8a0a09)
 
-GET /Pizza
+![image](https://github.com/user-attachments/assets/7d3ae9ff-fafb-44fd-a639-cedea2e55a14)
 
-Prompts for the exact pizza type
-
-GET /PizzaOptions?pizza=…
-
-Responds with praise or apology based on menu
-
-GET /ListOptions?toppings=…
-
-Handles extra toppings
-
-GET /SeatConfirmation?tablenumber=…
-
-Checks if a table is available
-
-GET /Confirmation/{pizza}/{toppings}/{tablenumber}
-
-Final order served
-
-GET /tip?tip=…
-
-Thanks the customer for a tip
-
-![image](https://github.com/user-attachments/assets/81f28b5b-fd17-4e31-825b-debe65dba738)
+![image](https://github.com/user-attachments/assets/38a53b18-8fe7-4e7e-af60-1cc63970d7f3)
 
 
-GET /goodbye
 
-Says farewell
 
-All responses are simple strings so you can focus on request flow rather than payload structure.
