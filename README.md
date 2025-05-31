@@ -5,10 +5,37 @@ A playful FastAPI service that walks a user through ordering a custom pizza at A
 📜 Introduction
 
 This project is a toy example meant for beginners learning FastAPI.  It exposes readable, self‑documenting endpoints (thanks to Swagger UI) so you can explore HTTP interactions without writing any front‑end code.
+🚀 How to Run the Project
+
+1. Prerequisites
+
+Python 3.8 +
+
+pip (or pipx / Poetry / Hatch – use what you like)
+
+2. Set up a virtual environment (optional but recommended)
+
+python -m venv .venv
+source .venv/bin/activate  # Windows: .venv\Scripts\activate
+
+3. Install dependencies
+
+pip install fastapi uvicorn
+
+4. Start the development server
+
+uvicorn main:app --reload
+
+Assuming you saved the code above as main.py.  The --reload flag auto‑restarts on file changes – perfect for rapid tweaking.
+
+5. Explore the API
+
+Open http://127.0.0.1:8000/docs in your browser.  FastAPI will display an interactive Swagger UI where you can call each endpoint.
 
 ✨ Project Description
 
 ![image](https://github.com/user-attachments/assets/9f724ed0-680f-40c2-be85-85fba320bfb1)
+
 Summary: simple strings for users to interact with the website
 
 ![image](https://github.com/user-attachments/assets/1a6628bf-345c-4422-9c87-a405504692b9)
