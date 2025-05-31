@@ -48,6 +48,9 @@ GET /tip?tip=…
 
 Thanks the customer for a tip
 
+![image](https://github.com/user-attachments/assets/81f28b5b-fd17-4e31-825b-debe65dba738)
+
+
 GET /goodbye
 
 Says farewell
