@@ -5,7 +5,8 @@ A playful FastAPI service that walks a user through ordering a custom pizza at A
 📜 Introduction
 
 This project is a toy example meant for beginners learning FastAPI.  It exposes readable, self‑documenting endpoints (thanks to Swagger UI) so you can explore HTTP interactions without writing any front‑end code.
-🚀 How to Run the Project
+
+🚀 Instructions to Run the Project
 
 1. Prerequisites
 
