@@ -2,11 +2,11 @@ Adam’s Pizzeria API
 
 A playful FastAPI service that walks a user through ordering a custom pizza at Adam’s Pizzeria.  The API demonstrates basic REST endpoints, FastAPI routing, and simple request/response logic that can be expanded into a full‑stack application.
 
-📜 Introduction
+Introduction
 
 This project is a toy example meant for beginners learning FastAPI.  It exposes readable, self‑documenting endpoints (thanks to Swagger UI) so you can explore HTTP interactions without writing any front‑end code.
 
-🚀 Instructions to Run the Project
+Instructions to Run the Project
 
 1. Prerequisites
 
@@ -33,7 +33,7 @@ Assuming you saved the code above as main.py.  The --reload flag auto‑restarts
 
 Open http://127.0.0.1:8000/docs in your browser.  FastAPI will display an interactive Swagger UI where you can call each endpoint.
 
-✨ Project Description
+Project Description
 
 ![image](https://github.com/user-attachments/assets/9f724ed0-680f-40c2-be85-85fba320bfb1)
 
