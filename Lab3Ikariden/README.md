@@ -25,7 +25,7 @@ GET	/seat	table	Placeholder route. Accepts table value but does nothing with it 
 GET	/order	pizza, quantity	Returns order summary like "Serving 2 Pepperoni pizzas".
 GET	/add-topping	topping	Returns confirmation message like "Extra olives added".
 
-BodyInput Route Route
+Body Input Route
 
 ![image](https://github.com/user-attachments/assets/f9360442-f717-4a00-93de-937cb28599cc)
 
