@@ -1,0 +1,14 @@
+
+Install dependencies
+bash
+Copy
+Edit
+npm install
+3. Start the server
+bash
+Copy
+Edit
+node server.js
+
+
+HTML Content Routes 
