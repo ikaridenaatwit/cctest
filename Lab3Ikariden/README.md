@@ -19,11 +19,8 @@ HTML Content Routes
 
 Query Routes
 
-GET	/	company	Returns a greeting like "Hello, [company]!" or "Hello world" if none given.
-GET	/specials	term	Returns JSON: { youSearchedFor: [term] }.
-GET	/seat	table	Placeholder route. Accepts table value but does nothing with it yet.
-GET	/order	pizza, quantity	Returns order summary like "Serving 2 Pepperoni pizzas".
-GET	/add-topping	topping	Returns confirmation message like "Extra olives added".
+![image](https://github.com/user-attachments/assets/e0668940-9bf7-4029-8f70-8ee9618c86da)
+
 
 Body Input Route
 
