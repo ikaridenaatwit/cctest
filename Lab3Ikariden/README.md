@@ -53,3 +53,20 @@ This Route Displays HTML Content greeting the user
 
 
 
+![image](https://github.com/user-attachments/assets/1c6b5a1a-be65-43f8-947e-7ebbe7b4e3dd)
+
+Asks the user "What pizza would you like today?" in HTML Content
+
+![image](https://github.com/user-attachments/assets/02f6ac64-55e2-4cfb-9bfb-8200f68dd405)
+Asks the user which table would the user like to be seated in HTML Content 
+
+![image](https://github.com/user-attachments/assets/bf0ef6c6-3b8a-47bd-9e67-2750a2fd1bde)
+Tells the User "Here is your Order" in HTML Content 
+
+![image](https://github.com/user-attachments/assets/8c070c0b-4289-4198-a038-1b19f952ab79)
+
+Tells the User "Thank you and come again!" in HTML Content
+
+
+
+
