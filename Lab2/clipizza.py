@@ -1,56 +1,48 @@
 import requests
 import sys
 
-# The address of our running FastAPI server
-# FIX 1: Changed port from 8080 to 8000, which is the default for FastAPI.
-BASE_URL = "http://127.0.0.1:8000"
+
+BASE_URL = "http://127.0.0.1:8080"
 
 def print_menu():
     """Prints the main menu of options to the console."""
     print("\n--- Adam's Pizzeria Interactive CLI ---")
     print("1. Get root greeting")
-    print("2. Welcome a returning customer (uses Header)")
+    print("2. Welcome a returning customer (header) ")
     print("3. What would you like today? (Start order)")
-    print("4. Ask about a pizza (uses Query Param)")
+    print("4. Ask about a pizza (Query)")
     print("5. Set favorite topping (sets Cookie with POST)")
     print("6. Get topping suggestion (reads Cookie)")
-    print("7. Confirm table (uses Query Param)")
-    print("8. Place final order (uses Path Params)")
-    print("9. Leave a tip (uses Query Param)")
+    print("7. Confirm table (Query)")
+    print("8. Place final order (uses Path)")
+    print("9. Leave a tip (Query)")
     print("10. Say goodbye")
     print("q. Quit")
     print("---------------------------------------")
 
 def handle_response(response):
-    
-    if response.ok: 
-        print(f"\n SUCCESS (Status Code: {response.status_code})")
+    if response.ok:
+        
         try:
-            
             json_response = response.json()
-            
             if isinstance(json_response, dict):
                 for key, value in json_response.items():
                     print(f"  {key.capitalize()}: {value}")
             else:
-                
                 print(f"  Server says: {json_response}")
-        except requests.exceptions.JSONDecodeError:
-            
-            
-            print(f"  Server says: {response.text.strip('\"')}")
+        except Exception:
+            print(f"  Server says: {response.text}")
     else:
         
-        print(f"\n ERROR (Status Code: {response.status_code})")
         try:
-            
-            print(f"  Details: {response.json().get('detail', 'No details provided.')}")
-        except requests.exceptions.JSONDecodeError:
-            
+            json_response = response.json()
+            # Print all key/value pairs in JSON error
+            for key, value in json_response.items():
+                print(f"  {key.capitalize()}: {value}")
+        except Exception:
             print(f"  Details: {response.text}")
 
 def main():
-    """The main function to run the interactive loop."""
     
     session = requests.Session()
     
@@ -61,13 +53,17 @@ def main():
         if not choice:
             continue
 
-        res = None 
+        res = None
         try:
             if choice == '1':
                 res = session.get(f"{BASE_URL}/")
             
             elif choice == '2':
                 customer_id = input("Enter customer ID (e.g., Jake123, Sam3456): ")
+                if not customer_id:
+                    print("\nCustomer ID cannot be empty. Please try again.")
+                    continue
+                
                 headers = {"customer-id-confirm": customer_id}
                 res = session.get(f"{BASE_URL}/Greetingscustomer", headers=headers)
 
@@ -115,17 +111,15 @@ def main():
             
             else:
                 print("\n Invalid choice, please try again.")
-
             
             if res:
                 handle_response(res)
 
         except requests.exceptions.RequestException:
-            print(f"\ Could not connect to the API server.")
+            print(f"\nCould not connect to the API server.")
             print(f"Please ensure your FastAPI app is running on {BASE_URL}")
             sys.exit()
 
-        
         if choice != 'q':
              input("\n--- Press Enter to continue ---")
 
