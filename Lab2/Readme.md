@@ -1,7 +1,11 @@
 Introduction
+
+
 This project demonstrates building a Python CLI tool that interacts with a FastAPI server using different types of HTTP requests: GET, POST, Headers, Cookies, Queries, and Paths.
 
  Description
+
+ 
 Backend built with FastAPI
 
 Frontend CLI developed in Python
