@@ -1,0 +1,65 @@
+services:
+  # ---- Shared file system (S3-compatible object store)
+  minio:
+    image: minio/minio:latest
+    container_name: minio
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: minio
+      MINIO_ROOT_PASSWORD: minio12345
+    volumes:
+      - minio_data:/data
+    ports:
+      - "9000:9000" # S3 API
+      - "9001:9001" # MinIO Console
+
+  # Create a bucket automatically at startup (idempotent)
+  minio-setup:
+    image: minio/mc:latest
+    depends_on:
+      - minio
+    entrypoint: >
+      /bin/sh -c "
+      until (/usr/bin/mc alias set local http://minio:9000 minio minio12345) do
+        echo '...waiting for minio...' && sleep 1;
+      done;
+      /usr/bin/mc mb -p local/shared || true;
+      /usr/bin/mc anonymous set download local/shared || true;
+      exit 0;
+      "
+
+  # ---- Shared memory (cache / kv store)
+  redis:
+    image: redis:7-alpine
+    container_name: redis
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    ports:
+      - "6379:6379"
+
+  # ---- Email viewer (dev only)
+  mailhog:
+    image: mailhog/mailhog:latest
+    container_name: mailhog
+    ports:
+      - "1025:1025" # SMTP sink
+      - "8025:8025" # Web UI
+
+  # ---- Email server (Postfix)
+  postfix:
+    image: boky/postfix:latest
+    container_name: postfix
+    depends_on:
+      - mailhog
+    ports:
+      - "1587:587" # Submission (use this from your app)
+    environment:
+      RELAYHOST: "mailhog:1025" # relay to MailHog so you can see emails
+      ALLOWED_SENDER_DOMAINS: "example.com"
+      POSTFIX_mynetworks: "0.0.0.0/0" # allow local dev to submit
+      POSTFIX_smtpd_recipient_restrictions: "permit_mynetworks, reject_unauth_destination"
+
+volumes:
+  minio_data:
+  redis_data:
