@@ -1,59 +1,20 @@
 #!/usr/bin/env python3
-"""
-Guitar Shop Interactive CLI (schema-aware) + Cloud Services Demos
------------------------------------------------------------------
-Terminal storefront that talks directly to your MySQL database, and a local
-"cloud services" stack for your lab:
-- MinIO (S3-compatible shared file system)
-- Redis (shared memory / cache)
-- Postfix -> MailHog (email)
 
-DB Features
-- Auto-selects your AWS RDS preset (no connection prompt)
-- Select/create a customer (uses email_address if present, else email, else name-only)
-- Browse categories and products
-- Add items to an in-memory cart
-- Checkout → creates rows in orders + order_items and uses a chosen/created shipping address
-- View past orders and drill into order details
-
-Cloud Service Demos (local Docker)
-- MinIO: create bucket if needed, upload/list/download a file
-- Redis: set/get a key
-- Postfix: send a test email (viewable in MailHog UI)
 
 Requires:
-  pip install mysql-connector-python minio redis
+  pip install mysql-connector-python
 
 Run:
   python cli_driver.py
 """
 from __future__ import annotations
 
-import os
 import sys
-import time
-import smtplib
-from email.message import EmailMessage
-from pathlib import Path
 from dataclasses import dataclass, field
 from decimal import Decimal
 from typing import Dict, Any, List, Optional, Tuple
 
 import mysql.connector
-from mysql.connector import Error
-
-# Optional imports for cloud demos (error handled if not installed)
-try:
-    from minio import Minio
-    from minio.error import S3Error
-except Exception:  # pragma: no cover
-    Minio = None
-    S3Error = Exception
-
-try:
-    import redis
-except Exception:  # pragma: no cover
-    redis = None
 
 # ---------------------------- DB Connection ---------------------------- #
 
@@ -375,101 +336,6 @@ def order_details(conn, order_id: int) -> List[dict]:
     cur.close()
     return rows
 
-# ---------------------------- Cloud Services Demos ------------------------ #
-# These defaults match the docker-compose I gave you earlier.
-
-MINIO_ENDPOINT   = os.getenv("MINIO_ENDPOINT",   "127.0.0.1:9000")
-MINIO_ACCESS_KEY = os.getenv("MINIO_ACCESS_KEY", "minio")
-MINIO_SECRET_KEY = os.getenv("MINIO_SECRET_KEY", "minio12345")
-MINIO_BUCKET     = os.getenv("MINIO_BUCKET",     "shared")
-MINIO_SECURE     = False  # http
-
-REDIS_HOST = os.getenv("REDIS_HOST", "127.0.0.1")
-REDIS_PORT = int(os.getenv("REDIS_PORT", "6379"))
-
-POSTFIX_HOST = os.getenv("POSTFIX_HOST", "127.0.0.1")
-POSTFIX_PORT = int(os.getenv("POSTFIX_PORT", "1587"))  # submission port mapped to 587 in container
-
-def demo_minio():
-    print("\n=== MinIO demo ===")
-    if Minio is None:
-        print("The 'minio' package is not installed. Run: pip install minio")
-        return
-    client = Minio(MINIO_ENDPOINT, access_key=MINIO_ACCESS_KEY,
-                   secret_key=MINIO_SECRET_KEY, secure=MINIO_SECURE)
-
-    # Ensure bucket exists
-    try:
-        if not client.bucket_exists(MINIO_BUCKET):
-            client.make_bucket(MINIO_BUCKET)
-            print(f"Created bucket: {MINIO_BUCKET}")
-        else:
-            print(f"Bucket exists: {MINIO_BUCKET}")
-    except S3Error as e:
-        print(f"MinIO error: {e}")
-        return
-
-    # Upload a tiny text file
-    tmp = Path("hello_minio.txt")
-    tmp.write_text("Hello from MinIO demo!\n")
-    client.fput_object(MINIO_BUCKET, tmp.name, str(tmp))
-    print(f"Uploaded object: s3://{MINIO_BUCKET}/{tmp.name}")
-
-    # List objects
-    print("Objects in bucket:")
-    for obj in client.list_objects(MINIO_BUCKET, recursive=True):
-        print(" -", obj.object_name)
-
-    # Download it back
-    dl = Path("downloaded_" + tmp.name)
-    client.fget_object(MINIO_BUCKET, tmp.name, str(dl))
-    print(f"Downloaded to: {dl.resolve()}")
-
-def demo_redis():
-    print("\n=== Redis demo ===")
-    if redis is None:
-        print("The 'redis' package is not installed. Run: pip install redis")
-        return
-    r = redis.Redis(host=REDIS_HOST, port=REDIS_PORT, decode_responses=True)
-    key = "demo:greeting"
-    value = f"hello @ {time.strftime('%Y-%m-%d %H:%M:%S')}"
-    r.set(key, value)
-    got = r.get(key)
-    print(f"SET {key} = {value}")
-    print(f"GET {key} -> {got}")
-
-def demo_postfix():
-    print("\n=== Postfix demo (relayed to MailHog) ===")
-    # Use real, resolvable domains by default; allow override via env vars.
-    to_addr = os.getenv("DEMO_TO", "test@example.com")
-    from_addr = os.getenv("DEMO_FROM", "noreply@example.com")
-
-    msg = EmailMessage()
-    msg["From"] = from_addr
-    msg["To"] = to_addr
-    msg["Subject"] = "Postfix demo ✔"
-    msg.set_content(
-        "This is a test message from the Postfix demo.\n"
-        "Open http://127.0.0.1:8025 to view it in MailHog."
-    )
-
-    try:
-        with smtplib.SMTP(POSTFIX_HOST, POSTFIX_PORT, timeout=10) as s:
-            s.ehlo()
-            # If you enable TLS on Postfix later:
-            # s.starttls(); s.ehlo()
-            s.send_message(msg)
-            print(f"Sent email via Postfix at {POSTFIX_HOST}:{POSTFIX_PORT} to {to_addr}")
-            print("Open http://127.0.0.1:8025 to view it (MailHog).")
-    except Exception as e:
-        print("Failed to send email:", e)
-
-
-def demo_cloud_all():
-    demo_minio()
-    demo_redis()
-    demo_postfix()
-
 # ---------------------------- UI Flows ------------------------------------ #
 
 def pick_category(conn) -> Optional[int]:
@@ -634,7 +500,7 @@ def show_orders(conn):
 # ---------------------------- Main Loop ----------------------------------- #
 
 def main():
-    print("\n=== Guitar Shop CLI + Local Cloud Services ===")
+    print("\n=== Guitar Shop CLI ===")
     conn_info = prompt_connection()
     conn = connect_to_db(**conn_info)
     if not conn:
@@ -653,14 +519,8 @@ Menu:
   4) View my orders
   5) Switch database connection
   6) Exit
-
-Cloud Services:
-  7) MinIO demo (upload/list/download)
-  8) Redis demo (set/get)
-  9) Send test email via Postfix (see in MailHog)
- 10) Run ALL cloud demos
 """)
-            choice = input("Select 1-10: ").strip()
+            choice = input("Select 1-6: ").strip()
             if choice == "1":
                 browse_products(conn, cart)
             elif choice == "2":
@@ -680,14 +540,6 @@ Cloud Services:
                     print("Still not connected. Returning to menu…")
             elif choice == "6" or choice.lower() == "q":
                 break
-            elif choice == "7":
-                demo_minio()
-            elif choice == "8":
-                demo_redis()
-            elif choice == "9":
-                demo_postfix()
-            elif choice == "10":
-                demo_cloud_all()
             else:
                 print("Please choose a valid option.")
     except KeyboardInterrupt:
