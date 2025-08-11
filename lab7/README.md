@@ -50,8 +50,6 @@ Switches database connections
 
  
 
-Option 5: 
-<img width="975" height="138" alt="image" src="https://github.com/user-attachments/assets/f100d0e7-3128-488a-9ac8-f0e57bd84b0b" />
 
  
 
